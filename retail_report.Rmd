@@ -671,7 +671,7 @@ save( sales_volume_pred_quant,
     file = "bayesian_model_output.RData")
 ```
 
-Figures 8 and 9 show the historical daily sales volume and gross sales. 95% credible intervals for the posterior predicted volume/sales are also shown. The predictions are shown up to November 2012. I will zoom in on the December 2012 predictions subsequently. Due to the high variability of the time-series, the credible intervals are very wide. However, our model does seem to capture the overall trends on the month and weekly scales.
+Figures 8 and 9 show the historical daily sales volume and gross sales. 95% credible intervals for the posterior predicted volume/sales are also shown. The predictions are shown up to November 2011. I will zoom in on the December 2011 predictions subsequently. Due to the high variability of the time-series, the credible intervals are very wide. However, our model does seem to capture the overall trends on the month and weekly scales.
 
 ```{r fig.cap="Figure 8. Historical daily sales volume.", class.source='fold-hide'}
 load( "bayesian_model_output.RData" )
@@ -679,7 +679,7 @@ load( "model_data.RData" )
 
 model_data[ , {
     plot( period_end, sales_volume/ 1000, type = "l", ylab = "Sales volume / 1000",
-        xlab = "Day", main = "Daily sales volume (up to end Nov 2012)")
+        xlab = "Day", main = "Daily sales volume (up to end Nov 2011)")
     NN = ncol(sales_volume_pred_quant)
     lines( period_end[-1][1:NN], sales_volume_pred_quant[1,]/ 1000, 
         col = rgb(1, 0, 0, 0.5) )
@@ -694,7 +694,7 @@ model_data[ , {
 ```{r fig.cap="Figure 9. Historical daily gross sales.", class.source='fold-hide'}
 model_data[ , {
     plot( period_end, gross_sales/1000, type = "l", ylab = "Gross sales / 1000",
-        xlab = "Day", main = "Daily gross sales (up to end Nov 2012)")
+        xlab = "Day", main = "Daily gross sales (up to end Nov 2011)")
     NN = ncol(gross_sales_pred_quant)
     lines( period_end[-1][1:NN], gross_sales_pred_quant[1,]/1000, 
         col = rgb(1, 0, 0, 0.5) )
@@ -705,16 +705,16 @@ model_data[ , {
     invisible(NULL)
 } ]
 
-posterior_predict_dec_2012 = rowSums( dec_gross_sales_pred ) +
+posterior_predict_dec_2011 = rowSums( dec_gross_sales_pred ) +
     sum(model_data_dec_only$gross_sales, na.rm = T )
-posterior_predict_dec_2012_CI = round(
-    quantile(posterior_predict_dec_2012, probs = c(0.05, 0.95)), -4 )
+posterior_predict_dec_2011_CI = round(
+    quantile(posterior_predict_dec_2011, probs = c(0.05, 0.95)), -4 )
 
 ```
 
-The predicted gross sales for December 2012 are shown in Figure 10. The daily volume graph is omitted for brevity. The break in the series between the data and the predicted values is a Saturday, which was removed from the dataset. Figure 11 shows the distribution of the predicted revenue for December 2012. Based on our model, the predicted revenue for December is expected to be $`r round( mean(posterior_predict_dec_2012), -4 )`, and between `r posterior_predict_dec_2012_CI[1]` and `r posterior_predict_dec_2012_CI[2]` with 90% probability. 
+The predicted gross sales for December 2011 are shown in Figure 10. The daily volume graph is omitted for brevity. The break in the series between the data and the predicted values is a Saturday, which was removed from the dataset. Figure 11 shows the distribution of the predicted revenue for December 2011. Based on our model, the predicted revenue for December is expected to be $`r round( mean(posterior_predict_dec_2011), -4 )`, and between `r posterior_predict_dec_2011_CI[1]` and `r posterior_predict_dec_2011_CI[2]` with 90% probability. 
 
-```{r fig.cap="Figure 10. Predicted daily gross sales for December 2012.", class.source='fold-hide'}
+```{r fig.cap="Figure 10. Predicted daily gross sales for December 2011.", class.source='fold-hide'}
 prediction_dates = model_data_dec_only[ is.na(gross_sales ), period_end ]
 
 # model_data_dec_only[ , {
@@ -731,7 +731,7 @@ prediction_dates = model_data_dec_only[ is.na(gross_sales ), period_end ]
 
 model_data_dec_only[ , {
     plot( period_end, gross_sales/1000, type = "l", ylab = "Gross sales / 1000",
-        xlab = "Day", main = "Daily gross sales (up to end Nov 2012)", ylim = c(0, 100))
+        xlab = "Day", main = "Daily gross sales (up to end Nov 2011)", ylim = c(0, 100))
     pred_quants = apply( dec_gross_sales_pred, 2, quantile, prob = c(0.05, 0.5, 0.95))
     lines( prediction_dates, pred_quants[1,]/1000, col = rgb(1, 0, 0, 0.5) )
     lines( prediction_dates, pred_quants[3,]/1000, col = rgb(0, 0, 1, 0.5) )
@@ -743,16 +743,16 @@ model_data_dec_only[ , {
     } ]
 ```
 
-```{r fig.cap="Figure 11. Predicted December 2012 revenue.", class.source='fold-hide'}
-hist( posterior_predict_dec_2012,
-    main = "Predicted revenue December 2012", breaks = 100,
+```{r fig.cap="Figure 11. Predicted December 2011 revenue.", class.source='fold-hide'}
+hist( posterior_predict_dec_2011,
+    main = "Predicted revenue December 2011", breaks = 100,
     ylab = "Density", xlab = "Revenue", prob = T)
 invisible(NULL)
 ```
 
-To improve our confidence in these results, we can examine the predictions for the previous December (2011). From Figure 12, the credible intervals enclose the observed daily gross sales. 
+To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 12, the credible intervals enclose the observed daily gross sales. 
 
-```{r fig.cap="Figure 12. Gross sales for December 2011.", class.source='fold-hide'}
+```{r fig.cap="Figure 12. Gross sales for December 2010.", class.source='fold-hide'}
 plot_interval = interval( as_date("2010-10-01"), as_date("2010-12-31") )
 plot_indicators = model_data[-1]$period_end %within% plot_interval
 
@@ -761,7 +761,7 @@ period_indicator = model_data_no_dec[ , period_end %in% prediction_dates ]
 
 model_data_no_dec[ period_end %in% prediction_dates, {
     plot( period_end, gross_sales/1000, type = "l", ylab = "Gross sales / 1000",
-        xlab = "Day", main = "Daily gross sales (Dec 2011)", ylim = c(0, 100))
+        xlab = "Day", main = "Daily gross sales (Dec 2010)", ylim = c(0, 100))
     pred_quants = gross_sales_pred_quant[ , period_indicator[-1] ]
     lines( prediction_dates, pred_quants[1,]/1000, col = rgb(1, 0, 0, 0.5) )
     lines( prediction_dates, pred_quants[3,]/1000, col = rgb(0, 0, 1, 0.5) )
@@ -780,9 +780,9 @@ december_revenue = round(
     model_data_no_dec[ period_end %in% prediction_dates, sum(gross_sales) ], -4 )
 ```
 
-The average predicted revenue for December 2011 was \$`r pred_december_revenue_mean`, with a 90% credible interval of `r pred_december_interval[1]` to `r pred_december_interval[2]`. This is compared to an actual revenue for December 2011 of \$`r december_revenue`. So, based on the model's historical performance, we except our forecast for December 2012 to be fairly accurate.
+The average predicted revenue for December 2010 was \$`r pred_december_revenue_mean`, with a 90% credible interval of `r pred_december_interval[1]` to `r pred_december_interval[2]`. This is compared to an actual revenue for December 2011 of \$`r december_revenue`. So, based on the model's historical performance, we except our forecast for December 2011 to be fairly accurate.
 
 ## Conclusion
 
-For December 2012, I forecast an expected revenue of $`r round( mean(posterior_predict_dec_2012), -4 )`, with 90% probability being between `r posterior_predict_dec_2012_CI[1]` and `r posterior_predict_dec_2012_CI[2]`. Based on forecast accuracy for last year (December 2011), I am quite confident in the accuracy of my predictions for 2012. Of course, this is assuming that past trends continue to hold into the future. Overall, I can back my prediction enough to recommend a Ferrari.
+For December 2011, I forecast an expected revenue of $`r round( mean(posterior_predict_dec_2011), -4 )`, with 90% probability being between `r posterior_predict_dec_2011_CI[1]` and `r posterior_predict_dec_2011_CI[2]`. Based on forecast accuracy for last year (December 2010), I am quite confident in the accuracy of my predictions for 2011. Of course, this is assuming that past trends continue to hold into the future. Overall, I can back my prediction enough to recommend a Ferrari.
 

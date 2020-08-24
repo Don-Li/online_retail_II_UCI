@@ -5,3 +5,5 @@
 .csv
 online_retail_II.csv
 model_data.RData
+jags_sample.RData
+bayesian_model_output.RData
