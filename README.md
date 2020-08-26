@@ -40,11 +40,12 @@ grepname = function( pattern, names_){
 
 I load the data into `R`.
 
-<p>
+<details><summary>Fold</summary>
 ```{.r .fold-show}
 retail_dataset = data.table( read.csv( "online_retail_II.csv" ) )
 ```
-</p>
+</details>
+
 I check the dataset for duplicates. If the data comes from a distributed database, it is likely to have duplicate entries. Two examples of duplicate entries are shown below:
 
 
