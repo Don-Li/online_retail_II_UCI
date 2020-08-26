@@ -454,7 +454,11 @@ library( rjags )
 # Make a function for regex lookup of names
 grepname = function( pattern, names_){
     names_[ grepl( pattern, names_ ) ]
-}</code></pre>
+}
+
+knitr::opts_chunk$set(
+  fig.path = &quot;retail_report_files/figure-html/&quot;
+)</code></pre>
 </div>
 <div id="task-1-loading-the-data-and-preliminary-data-cleaning" class="section level1">
 <h1>Task 1: Loading the data and preliminary data cleaning</h1>

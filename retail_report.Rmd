@@ -33,6 +33,10 @@ library( rjags )
 grepname = function( pattern, names_){
     names_[ grepl( pattern, names_ ) ]
 }
+
+knitr::opts_chunk$set(
+  fig.path = "retail_report_files/figure-html/"
+)
 ```
 
 # Task 1: Loading the data and preliminary data cleaning

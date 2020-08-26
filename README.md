@@ -40,15 +40,13 @@ grepname = function( pattern, names_){
 
 I load the data into `R`.
 
-<details><summary>Fold</summary>
-
 ```{.r .fold-show}
 retail_dataset = data.table( read.csv( "online_retail_II.csv" ) )
 ```
-</details>
 
 I check the dataset for duplicates. If the data comes from a distributed database, it is likely to have duplicate entries. Two examples of duplicate entries are shown below:
 
+<details><summary>Fold</summary>
 
 ```{.r .fold-hide}
 duplicate_data = retail_dataset[ duplicated(retail_dataset) ]
@@ -59,6 +57,7 @@ duplicate_instance = duplicate_data[1]
 retail_dataset[ Invoice == duplicate_instance$Invoice &
     StockCode == duplicate_instance$StockCode ]
 ```
+</details>
 
 ```
 ##    Invoice StockCode              Description Quantity         InvoiceDate
@@ -73,15 +72,20 @@ retail_dataset[ Invoice == duplicate_instance$Invoice &
 
 While it is possible that they are simply repeated orders, they are more likely to be duplicates, due to the identical invoice dates and quantities. Thus, I will remove all duplicate observations. In total, there were 1067371 observations in the raw dataset and 34335 duplicate orders.
 
+<details><summary>Fold</summary>
+
 
 ```{.r .fold-hide}
 retail_dataset = unique(retail_dataset)
 ```
 
+</details>
+
 After the removal of unique values, the dataset contains 1033036 observations and 8 variables.
 
 We note that the `InvoiceDate` variable has been read in as a `character`. Therefore, we will convert `InvoiceDate` to a `date` class. The rest of the variables have reasonable types given the documentation. I will also add an `ID` variable to track each item. In addition, to facilitate date-based subsetting, I will also create variables `InvoiceDays`, `InvoiceWeek`, and so on. Of note, `InvoiceDays` represents the day of the month, `InvoiceWD` represents the day of the week, `InvoiceWeek` represents the week of the year. 
 
+<details><summary>Fold</summary>
 
 ```{.r .fold-hide}
 transform_dates = function( dataset, date_var_list ){
@@ -103,6 +107,7 @@ transform_dates = function( dataset, date_var_list ){
 }
 ```
 
+</details>
 
 ```{.r .fold-show}
 # Modification in place
@@ -122,6 +127,7 @@ retail_dataset[ , Cancel := grepl( "^[C,c]", Invoice ) ]
 
 A collection of exploratory plots. I made an aggregator function (hidden below). There are other ways to aggregate, such as making a `ts` object and using `aggregate`. But, I prefer the lower-level interface.
 
+<details><summary>Fold</summary>
 
 ```{.r .fold-hide}
 time_aggregator = function( rawdata, aggregate_scale, custom_expression = NULL ){
