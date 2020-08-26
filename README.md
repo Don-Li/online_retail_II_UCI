@@ -192,6 +192,7 @@ daily_sales[ , plot( period_end, sales_volume / 1000, type = "l",
 </details>
 
 ![Figure 1. Daily sales volume.](retail_report_files/figure-html/unnamed-chunk-9-1.png)
+
 Figure 1. Daily sales volume.
 
 <details><summary>Fold</summary>
@@ -224,6 +225,7 @@ weekly_sales[ , plot( period_end, sales_volume/1000, type = "l",
 </details>
 
 ![Figure 2. Weekly sales volume.](retail_report_files/figure-html/unnamed-chunk-10-1.png)
+
 Figure 2. Weekly sales volume.
 
 Monthly sales (Figure 3) tends to increase in the later parts of the year. In 2012, there is an apparent decrease for December. However, this is because we have incomplete monthly data for 2012.
@@ -242,7 +244,9 @@ monthly_sales[ , plot( period_end, sales_volume/1000, type = "l",
 </details>
 
 ![Figure 3. Monthly sales volume.](retail_report_files/figure-html/unnamed-chunk-11-1.png)
+
 Figure 3. Monthly sales volume.
+
 ### Last month revenue share by product and by customer
 
 <details><summary>Fold</summary>
@@ -303,6 +307,7 @@ revenue_by_product[ , {
 </details>
 
 ![Figure 4. Revenue share by product (stock code)](retail_report_files/figure-html/unnamed-chunk-14-1.png)
+
 Figure 4. Revenue share by product (stock code)
 
 Figure 5 shows the revenue share by customer. Because there are a lot of customers, I have enumerated the products from one to the number of customers and omitted the axis labels. For customers with high revenue share, I have put their customer ID as a label. The customer with the highest revenue share is `NA`. From inspection of the data, this appears to be a missing value and/or a catch-all for non-sales items, such as inventory write-offs, Amazon fees, bad debts, and so on.
@@ -323,6 +328,7 @@ revenue_by_customer[ , {
 
 ![Figure 5. Revenue share by customer](retail_report_files/figure-html/unnamed-chunk-15-1.png)
 
+Figure 5. Revenue share by customer
 
 ### Weighted average monthly sale by volume
 
@@ -352,6 +358,7 @@ weighted_avg_month_sale_vol[ , {
 </details>
 
 ![Figure 6. Weighted average monthly sale by volume](retail_report_files/figure-html/unnamed-chunk-16-1.png)
+
 Figure 6. Weighted average monthly sale by volume
 
 # Task 3. Cleaning negative volumes
@@ -523,6 +530,7 @@ However, if we can predict today's sales volume, then we can use that prediction
 Therefore, the solution I propose involves a network of relationships between different variables and predicted variables. In the first stage of the model, I predict today's sales volume. Then, I use the predicted sales volume to predict today's gross sales. The predicted revenue for December is obtained from adding the daily gross sales predictions in December. See Figure 7.
 
 ![Figure 7. Two-stage hierarchical model](two_stage_model.png)
+
 Figure 7. Two-stage hierarchical model
 
 In the Bayesian model, the uncertainty in our predictions of sales volume are automatically accounted for in our predictions for gross sales. The overall uncertainty for the December revenue is obtained by aggregating across the daily gross sales predictions. 
@@ -808,6 +816,7 @@ model_data[ , {
 </details>
 
 ![Figure 8. Historical daily sales volume.](retail_report_files/figure-html/unnamed-chunk-24-1.png)
+
 Figure 8. Historical daily sales volume.
 
 <details><summary>Fold</summary>
@@ -831,6 +840,7 @@ model_data[ , {
 
 
 ![Figure 9. Historical daily gross sales.](retail_report_files/figure-html/unnamed-chunk-25-1.png)
+
 Figure 9. Historical daily gross sales.
 
 <details><summary>Fold</summary>
@@ -892,6 +902,7 @@ hist( posterior_predict_dec_2011,
 ```
 
 ![Figure 11. Predicted December 2011 revenue.](retail_report_files/figure-html/unnamed-chunk-27-1.png)
+
 Figure 11. Predicted December 2011 revenue.
 
 ```{.r .fold-hide}
@@ -928,6 +939,7 @@ model_data_no_dec[ period_end %in% prediction_dates, {
 </details>
 
 ![Figure 12. Gross sales for December 2010.](retail_report_files/figure-html/unnamed-chunk-28-1.png)
+
 Figure 12. Gross sales for December 2010.
 
 <details><summary>Fold</summary>
