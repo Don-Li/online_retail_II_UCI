@@ -2,7 +2,7 @@ Hello, welcome to my report for the online retail II UCI revenue forecasting exe
 
 You can find my solution/report in four places. There is one version [here](https://github.com/Don-Li/online_retail_II_UCI#task-0-loading-libraries) rendered as a Git-flavoured markdown file.
 
-A second version cab be found at https://don-li.github.io/online_retail_II_UCI/, as a github.io page.
+A second version can be found at https://don-li.github.io/online_retail_II_UCI/, as a github.io page.
 
 Another version can be found at https://github.com/Don-Li/online_retail_II_UCI/blob/master/retail_report.html, as a html file.
 
