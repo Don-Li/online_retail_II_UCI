@@ -856,7 +856,7 @@ hist( posterior_predict_dec_2011,
 invisible(NULL)
 ```
 
-To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 12, the credible intervals enclose the observed daily gross sales. 
+To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 11, the credible intervals enclose the observed daily gross sales. 
 
 
 ```{.r .fold-hide}
@@ -880,7 +880,7 @@ model_data_no_dec[ period_end %in% prediction_dates, {
     } ]
 ```
 
-![Figure 12. Gross sales for December 2010.](retail_report_files/figure-html/unnamed-chunk-28-1.png)
+![Figure 11. Gross sales for December 2010.](retail_report_files/figure-html/unnamed-chunk-28-1.png)
 
 ```
 ## NULL

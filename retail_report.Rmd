@@ -756,9 +756,9 @@ hist( posterior_predict_dec_2011,
 invisible(NULL)
 ```
 
-To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 12, the credible intervals enclose the observed daily gross sales. 
+To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 11, the credible intervals enclose the observed daily gross sales. 
 
-```{r fig.cap="Figure 12. Gross sales for December 2010.", class.source='fold-hide'}
+```{r fig.cap="Figure 11. Gross sales for December 2010.", class.source='fold-hide'}
 plot_interval = interval( as_date("2010-10-01"), as_date("2010-12-31") )
 plot_indicators = model_data[-1]$period_end %within% plot_interval
 
