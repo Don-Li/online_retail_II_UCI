@@ -374,13 +374,11 @@ retail_dataset[ StockCode == 22087 & Customer.ID == 17337,{
     list( Invoice, StockCode, Description, Quantity, InvoiceDate, Price, 
         Customer.ID )
     }]
-```
-
-</details>
-
+    
 # We see that customer 17337 has made two refunds of 12 units of item 22087. It is possible that one of these refunds is for a purchase before the data collection start. However, this means this refund would have been for items purchased over a year ago. Instead, it is more likely that these are a data entry error. Further, I will assume that these errors are dealt in some way (e.g., absorbed into bad debt).
 ```
 
+</details>
 
 3. The third option for negative sales quantities is that the invoicing system is used for inventory write-offs (e.g.,  defective inventory), samples for clients, bank charges, and postage (Examples folded). 
 
