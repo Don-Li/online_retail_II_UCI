@@ -193,10 +193,6 @@ daily_sales[ , plot( period_end, sales_volume / 1000, type = "l",
 
 ![Figure 1. Daily sales volume.](retail_report_files/figure-html/unnamed-chunk-9-1.png)
 
-```
-## NULL
-```
-
 <details><summary>Fold</summary>
 
 ```{.r .fold-hide}
@@ -228,10 +224,6 @@ weekly_sales[ , plot( period_end, sales_volume/1000, type = "l",
 
 ![Figure 2. Weekly sales volume.](retail_report_files/figure-html/unnamed-chunk-10-1.png)
 
-```
-## NULL
-```
-
 Monthly sales (Figure 3) tends to increase in the later parts of the year. In 2012, there is an apparent decrease for December. However, this is because we have incomplete monthly data for 2012.
 
 
@@ -249,9 +241,6 @@ monthly_sales[ , plot( period_end, sales_volume/1000, type = "l",
 
 ![Figure 3. Monthly sales volume.](retail_report_files/figure-html/unnamed-chunk-11-1.png)
 
-```
-## NULL
-```
 
 ### Last month revenue share by product and by customer
 
@@ -314,10 +303,6 @@ revenue_by_product[ , {
 
 ![Figure 4. Revenue share by product (stock code)](retail_report_files/figure-html/unnamed-chunk-14-1.png)
 
-```
-## NULL
-```
-
 
 Figure 5 shows the revenue share by customer. Because there are a lot of customers, I have enumerated the products from one to the number of customers and omitted the axis labels. For customers with high revenue share, I have put their customer ID as a label. The customer with the highest revenue share is `NA`. From inspection of the data, this appears to be a missing value and/or a catch-all for non-sales items, such as inventory write-offs, Amazon fees, bad debts, and so on.
 
@@ -336,10 +321,6 @@ revenue_by_customer[ , {
 </details>
 
 ![Figure 5. Revenue share by customer](retail_report_files/figure-html/unnamed-chunk-15-1.png)
-
-```
-## NULL
-```
 
 
 ### Weighted average monthly sale by volume
@@ -371,10 +352,6 @@ weighted_avg_month_sale_vol[ , {
 
 ![Figure 6. Weighted average monthly sale by volume](retail_report_files/figure-html/unnamed-chunk-16-1.png)
 
-```
-## NULL
-```
-
 
 # Task 3. Cleaning negative volumes
 
@@ -397,6 +374,7 @@ retail_dataset[ StockCode == 22087 & Customer.ID == 17337,{
     list( Invoice, StockCode, Description, Quantity, InvoiceDate, Price, 
         Customer.ID )
     }]
+```
 
 </details>
 
@@ -831,9 +809,6 @@ model_data[ , {
 
 ![Figure 8. Historical daily sales volume.](retail_report_files/figure-html/unnamed-chunk-24-1.png)
 
-```
-## NULL
-```
 
 <details><summary>Fold</summary>
 
@@ -856,10 +831,6 @@ model_data[ , {
 
 
 ![Figure 9. Historical daily gross sales.](retail_report_files/figure-html/unnamed-chunk-25-1.png)
-
-```
-## NULL
-```
 
 <details><summary>Fold</summary>
 
@@ -909,9 +880,6 @@ model_data_dec_only[ , {
 
 ![Figure 10. Predicted daily gross sales for December 2011.](retail_report_files/figure-html/unnamed-chunk-26-1.png)
 
-```
-## NULL
-```
 
 <details><summary>Fold</summary>
 
@@ -957,10 +925,6 @@ model_data_no_dec[ period_end %in% prediction_dates, {
 </details>
 
 ![Figure 12. Gross sales for December 2010.](retail_report_files/figure-html/unnamed-chunk-28-1.png)
-
-```
-## NULL
-```
 
 <details><summary>Fold</summary>
 
