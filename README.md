@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 
 <html>
@@ -1210,3 +1211,4 @@ $(document).ready(function () {
 
 </body>
 </html>
+```
