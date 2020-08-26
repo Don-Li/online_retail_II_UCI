@@ -12,11 +12,8 @@ The dataset can be found at https://www.kaggle.com/mashlyn/online-retail-ii-uci.
 
 Thank you for reading.
 
----
-title: 'Analysis report: Online Retail II UCI'
-author: "Don Li (donli.datascience@gmail.com)"
-date: "24/08/2020"
----
+# Analysis report: Online Retail II UCI
+## Don Li (donli.datascience@gmail.com)
 
 In this document, I will analyse the sales records for an online retailer for sales recorded between 01/12/2009 and 09/12/2011. I start with the data cleaning.
 
