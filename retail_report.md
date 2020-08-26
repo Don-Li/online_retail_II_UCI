@@ -19,7 +19,7 @@ In this document, I will analyse the sales records for an online retailer for sa
 
 # Task 0: Loading libraries
 
-To keep my work as minimialist as possible, I will use only three packages, `data.table`, `lubridate`, and `rjags`.
+To keep my work as minimalist as possible, I will use only three packages, `data.table`, `lubridate`, and `rjags`.
 
 
 ```r

@@ -17,7 +17,7 @@ In this document, I will analyse the sales records for an online retailer for sa
 
 # Task 0: Loading libraries
 
-To keep my work as minimialist as possible, I will use only three packages, `data.table`, `lubridate`, and `rjags`.
+To keep my work as minimalist as possible, I will use only three packages, `data.table`, `lubridate`, and `rjags`.
 
 ```{r message = FALSE, warning = FALSE, include=FALSE}
 options( scipen = 10000 )
@@ -751,9 +751,9 @@ hist( posterior_predict_dec_2011,
 invisible(NULL)
 ```
 
-To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 12, the credible intervals enclose the observed daily gross sales. 
+To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 11, the credible intervals enclose the observed daily gross sales. 
 
-```{r fig.cap="Figure 12. Gross sales for December 2010.", class.source='fold-hide', echo=FALSE}
+```{r fig.cap="Figure 11. Gross sales for December 2010.", class.source='fold-hide', echo=FALSE}
 plot_interval = interval( as_date("2010-10-01"), as_date("2010-12-31") )
 plot_indicators = model_data[-1]$period_end %within% plot_interval
 
