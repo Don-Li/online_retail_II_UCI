@@ -4,4 +4,4 @@ An analysis of online retail data from https://www.kaggle.com/mashlyn/online-ret
 
 The analysis was done using R.
 
-The report is in a .html file called 'retail_report.html'
+The report is in a .html file called 'retail_report.html' https://github.com/Don-Li/online_retail_II_UCI/blob/master/retail_report.html
