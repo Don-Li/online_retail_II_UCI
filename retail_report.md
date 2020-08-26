@@ -21,7 +21,8 @@ In this document, I will analyse the sales records for an online retailer for sa
 
 To keep my work as minimialist as possible, I will use only three packages, `data.table`, `lubridate`, and `rjags`.
 
-```{r message = FALSE, warning = FALSE}
+
+```r
 options( scipen = 10000 )
 knitr::opts_chunk$set(class.source='fold-show')
 
@@ -39,13 +40,15 @@ grepname = function( pattern, names_){
 
 I load the data into `R`.
 
-```{r}
+
+```{.r .fold-show}
 retail_dataset = data.table( read.csv( "online_retail_II.csv" ) )
 ```
 
 I check the dataset for duplicates. If the data comes from a distributed database, it is likely to have duplicate entries. Two examples of duplicate entries are shown below:
 
-```{r class.source='fold-hide'}
+
+```{.r .fold-hide}
 duplicate_data = retail_dataset[ duplicated(retail_dataset) ]
 n_duplicates = nrow(duplicate_data)
 n_data = nrow(retail_dataset)
@@ -55,17 +58,30 @@ retail_dataset[ Invoice == duplicate_instance$Invoice &
     StockCode == duplicate_instance$StockCode ]
 ```
 
-While it is possible that they are simply repeated orders, they are more likely to be duplicates, due to the identical invoice dates and quantities. Thus, I will remove all duplicate observations. In total, there were `r n_data` observations in the raw dataset and `r n_duplicates` duplicate orders.
+```
+##    Invoice StockCode              Description Quantity         InvoiceDate
+## 1:  489517     21912 VINTAGE SNAKES & LADDERS        1 2009-12-01 11:34:00
+## 2:  489517     21912 VINTAGE SNAKES & LADDERS        1 2009-12-01 11:34:00
+## 3:  489517     21912 VINTAGE SNAKES & LADDERS        1 2009-12-01 11:34:00
+##    Price Customer.ID        Country
+## 1:  3.75       16329 United Kingdom
+## 2:  3.75       16329 United Kingdom
+## 3:  3.75       16329 United Kingdom
+```
 
-```{r class.source='fold-hide'}
+While it is possible that they are simply repeated orders, they are more likely to be duplicates, due to the identical invoice dates and quantities. Thus, I will remove all duplicate observations. In total, there were 1067371 observations in the raw dataset and 34335 duplicate orders.
+
+
+```{.r .fold-hide}
 retail_dataset = unique(retail_dataset)
 ```
 
-After the removal of unique values, the dataset contains `r nrow(retail_dataset)` observations and `r ncol(retail_dataset)` variables.
+After the removal of unique values, the dataset contains 1033036 observations and 8 variables.
 
 We note that the `InvoiceDate` variable has been read in as a `character`. Therefore, we will convert `InvoiceDate` to a `date` class. The rest of the variables have reasonable types given the documentation. I will also add an `ID` variable to track each item. In addition, to facilitate date-based subsetting, I will also create variables `InvoiceDays`, `InvoiceWeek`, and so on. Of note, `InvoiceDays` represents the day of the month, `InvoiceWD` represents the day of the week, `InvoiceWeek` represents the week of the year. 
 
-```{r class.source='fold-hide'}
+
+```{.r .fold-hide}
 transform_dates = function( dataset, date_var_list ){
     dataset[ , InvoiceDate := {
         # Timezone is assigned to my locale, but should not be a big deal
@@ -85,7 +101,8 @@ transform_dates = function( dataset, date_var_list ){
 }
 ```
 
-```{r}
+
+```{.r .fold-show}
 # Modification in place
 date_var_list = paste0( "Invoice", c("Day", "Week", "Month", "Year", "WD") )
 transform_dates( retail_dataset, date_var_list )
@@ -94,7 +111,8 @@ retail_dataset[ , ID := 1:.N ]
 
 I note from the documentation that invoices prefixed with `C` represent canceled orders. So, to make it easier to find these, I will make a `Cancel` variable.
 
-```{r}
+
+```{.r .fold-show}
 retail_dataset[ , Cancel := grepl( "^[C,c]", Invoice ) ] 
 ```
 
@@ -102,7 +120,8 @@ retail_dataset[ , Cancel := grepl( "^[C,c]", Invoice ) ]
 
 A collection of exploratory plots. I made an aggregator function (hidden below). There are other ways to aggregate, such as making a `ts` object and using `aggregate`. But, I prefer the lower-level interface.
 
-```{r class.source='fold-hide'}
+
+```{.r .fold-hide}
 time_aggregator = function( rawdata, aggregate_scale, custom_expression = NULL ){
     date_var_list_agg = paste0( "Invoice", c("Day", "Week", "Month", "Year") )
     time_scale_id = which( grepl( aggregate_scale, date_var_list_agg ) )
@@ -150,13 +169,22 @@ Figure 1 shows the daily sales volumes. We see that there are some spikes of lar
 
 From the series, we see low sales near the end/start of a year. There also appears to be some local autocorrelation in the later parts of the year (October, November). There may also be weekly seasonality.
 
-```{r fig.cap="Figure 1. Daily sales volume.", class.source='fold-hide'}
+
+```{.r .fold-hide}
 aggregate_scale = "Day"
 daily_sales = time_aggregator( retail_dataset, aggregate_scale )
 daily_sales[ , plot( period_end, sales_volume / 1000, type = "l",
     xlab = "Day", ylab = "Sales volume / 1000",
     main = "Daily sales volume") ]
+```
 
+![Figure 1. Daily sales volume.](retail_report_files/figure-html/unnamed-chunk-9-1.png)
+
+```
+## NULL
+```
+
+```{.r .fold-hide}
 daily_sales[ , sales_volume := {
     big_refund_days = which( sales_volume < -100 )
     sales_volume[ big_refund_days - 1 ] = 
@@ -169,7 +197,8 @@ daily_sales[ , sales_volume := {
 
 Figure 2 shows the weekly volumes. The weekly sales volume appears to be higher near the end of the year (September-November) than in the other parts of the year. In 2010, weekly sales were also relatively high around March, but not in 2011. It may be worthwhile to investigate this if I had more time.
 
-```{r fig.cap="Figure 2. Weekly sales volume.", class.source='fold-hide'}
+
+```{.r .fold-hide}
 aggregate_scale = "Week"
 weekly_sales = time_aggregator( retail_dataset, aggregate_scale )
 weekly_sales[ , plot( period_end, sales_volume/1000, type = "l",
@@ -177,10 +206,17 @@ weekly_sales[ , plot( period_end, sales_volume/1000, type = "l",
     ylab = "Sales volume /1000" ) ]
 ```
 
+![Figure 2. Weekly sales volume.](retail_report_files/figure-html/unnamed-chunk-10-1.png)
+
+```
+## NULL
+```
+
 Monthly sales (Figure 3) tends to increase in the later parts of the year. In 2012, there is an apparent decrease for December. However, this is because we have incomplete monthly data for 2012.
 
 
-```{r fig.cap="Figure 3. Monthly sales volume.", class.source='fold-hide'}
+
+```{.r .fold-hide}
 aggregate_scale = "Month"
 monthly_sales = time_aggregator( retail_dataset, aggregate_scale )
 monthly_sales[ , plot( period_end, sales_volume/1000, type = "l",
@@ -188,9 +224,16 @@ monthly_sales[ , plot( period_end, sales_volume/1000, type = "l",
     ylab = "Sales volume / 1000" ) ]
 ```
 
+![Figure 3. Monthly sales volume.](retail_report_files/figure-html/unnamed-chunk-11-1.png)
+
+```
+## NULL
+```
+
 ### Last month revenue share by product and by customer
 
-```{r class.source='fold-hide'}
+
+```{.r .fold-hide}
 # A function for subsetting based on some time unit
 date_subsetting = function( datelist, date_, timescale ){
     list_floor = ceiling_date( datelist, unit = timescale )
@@ -208,7 +251,8 @@ revenue_by_subset = function( rawdata, subset_variable ){
 
 In our hypothetical scenario, the current month is 12/2011. So, the previous month is 11/2011.
 
-```{r class.source='fold-hide'}
+
+```{.r .fold-hide}
 current_month = as_date("2011-12-01")
 last_month = current_month - months(1)
 timescale = "month"
@@ -222,7 +266,8 @@ Figure 4 shows the revenue share by stock code. Because there are a lot of produ
 
 For items with negative revenue share, we see items like `BANK CHARGES`, `AMAZON FEE`, `CRUK`, and `D`. `AMAZON FEE` appears to be Amazon seller fees. `CRUK` appears to be charity donations to the Cancer Research UK. `D` denotes discounts. Therefore, it appears that this company uses their invoice system for all invoices, rather than having a dedicated sales system. This is important for analyses of gross sales.
 
-```{r fig.cap="Figure 4. Revenue share by product (stock code)", class.source='fold-hide'}
+
+```{.r .fold-hide}
 revenue_by_product[ , {
     plot( 1:.N, revenue_share, pch = 16, xlab = "StockCode", xaxt = "n",
         ylab = "Revenue share (%)", main = "Revenue share by product")
@@ -235,10 +280,17 @@ revenue_by_product[ , {
     } ]
 ```
 
+![Figure 4. Revenue share by product (stock code)](retail_report_files/figure-html/unnamed-chunk-14-1.png)
+
+```
+## NULL
+```
+
 
 Figure 5 shows the revenue share by customer. Because there are a lot of customers, I have enumerated the products from one to the number of customers and omitted the axis labels. For customers with high revenue share, I have put their customer ID as a label. The customer with the highest revenue share is `NA`. From inspection of the data, this appears to be a missing value and/or a catch-all for non-sales items, such as inventory write-offs, Amazon fees, bad debts, and so on.
 
-```{r fig.cap="Figure 5. Revenue share by customer", class.source='fold-hide'}
+
+```{.r .fold-hide}
 revenue_by_customer[ , {
     plot( 1:.N, revenue_share, pch = 16, xlab = "Customer", xaxt = "n",
         ylab = "Revenue share (%)", main = "Revenue share by customer")
@@ -248,6 +300,12 @@ revenue_by_customer[ , {
 } ]
 ```
 
+![Figure 5. Revenue share by customer](retail_report_files/figure-html/unnamed-chunk-15-1.png)
+
+```
+## NULL
+```
+
 
 ### Weighted average monthly sale by volume
 
@@ -255,7 +313,8 @@ Figure 6 shows the average monthly sales, weighted by the sales volume across al
 
 We see that the volume-weighted average monthly sale price ranges between 1.5 and 2.2. And that the average tends to be higher in 2011 than 2010. Looking at the monthly sales volume (Figure 3), the sales volume in early 2011 was lower than in early 2010. This suggests that the company may be selling more expensive items or increasing their markups to achieve higher monthly sales prices.
 
-```{r fig.cap="Figure 6. Weighted average monthly sale by volume", class.source='fold-hide'}
+
+```{.r .fold-hide}
 custom_expression = expression({
     mean_sale = sum( Quantity * Price / sum(Quantity) )
     list( mean_sale = mean_sale, period_end = period_end)
@@ -272,6 +331,12 @@ weighted_avg_month_sale_vol[ , {
 } ]
 ```
 
+![Figure 6. Weighted average monthly sale by volume](retail_report_files/figure-html/unnamed-chunk-16-1.png)
+
+```
+## NULL
+```
+
 
 # Task 3. Cleaning negative volumes
 
@@ -286,7 +351,8 @@ Therefore, we are interested in refunds that we cannot match to a purchase. Ther
 1. The purchase occurred before the data collection. This is what we want to remove.
 2. The returns are a data entry error. There are some refunds that occurred over a year after the data collection start that could not be matched to purchases. In my view, it is unlikely for customers to be claiming refunds on goods purchased over a year ago (Examples folded).
 
-```{r class.source='fold-hide', eval = FALSE}
+
+```{.r .fold-hide}
 # For example, consider the situation:
 retail_dataset[ StockCode == 22087 & Customer.ID == 17337,{
     list( Invoice, StockCode, Description, Quantity, InvoiceDate, Price, 
@@ -298,7 +364,8 @@ retail_dataset[ StockCode == 22087 & Customer.ID == 17337,{
 
 
 3. The third option for negative sales quantities is that the invoicing system is used for inventory write-offs (e.g.,  defective inventory), samples for clients, bank charges, and postage (Examples folded). 
-```{r class.source='fold-hide', eval = FALSE}
+
+```{.r .fold-hide}
 # For example, consider:
 head( retail_dataset[ is.na(Customer.ID ) & Quantity < 0, {
     list(Invoice, StockCode, Description, Quantity, InvoiceDate, Price,
@@ -324,7 +391,8 @@ The process for cleaning the data given the criteria above and the assumptions a
 
 The code is folded below:
 
-```{r class.source='fold-hide'}
+
+```{.r .fold-hide}
 date_slice = function( dataset, date_start, time_period ){
     date_interval = interval( date_start, date_start + time_period )
     dataset[ InvoiceDate %within% date_interval, ]
@@ -351,11 +419,12 @@ retail_dataset_refund_adjusted = retail_dataset[ ! ID %in% unmatched_refunds$ID 
 nrow_adjusted_data = nrow(retail_dataset_refund_adjusted)
 ```
 
-I found `r n_first_year_refunds` refunds in the first year. I was able to match `r n_first_year_matched_refunds` refunds to corresponding purchases. After removing the unmatched refunds in the first year, the dataset had `r nrow_adjusted_data` observations.
+I found 9879 refunds in the first year. I was able to match 5703 refunds to corresponding purchases. After removing the unmatched refunds in the first year, the dataset had 1026576 observations.
 
 For completeness, I will also removed the matched refunds but throughout the dataset. The code is below (folded):
 
-```{r class.source='fold-hide'}
+
+```{.r .fold-hide}
 retail_dataset_refund_adjusted_refunds = retail_dataset_refund_adjusted[ Cancel == TRUE ]
 retail_dataset_refund_adjusted_purchases = retail_dataset_refund_adjusted[ Cancel == FALSE ]
 
@@ -377,7 +446,7 @@ nrow_adjusted = nrow(retail_dataset_refund_adjusted)
 nrow_adjusted2 = nrow(retail_dataset_refund_adjusted2)
 ```
 
-I was able to match `r matched_refunds` over the whole dataset. After removing the matched refunds, the dataset had `r nrow_adjusted2` observations.
+I was able to match 13359 over the whole dataset. After removing the matched refunds, the dataset had 1006396 observations.
 
 # Task 4. Modelling the dataset
 
@@ -456,7 +525,8 @@ I make some adjustments to the data before modeling.
 
 **Incomplete 2012 yearly data.** A final adjustment is also related to partial December data. Because I have a yearly factor variable, the partial December data is problematic. On inspection of the yearly gross sales and sales volume, 2010 was higher than 2009. But so far, 2011 seems similar to the first 11 months of 2010. Therefore, for modeling, I will treat the year-effect for 2011 as the same for 2010.
 
-```{r class.source='fold-hide'}
+
+```{.r .fold-hide}
 model_retail_data = retail_dataset_refund_adjusted2
 # Price == 0 for write-off inventory things
 # Price < 0 for bad debt
@@ -524,7 +594,8 @@ To deal with these assumptions, we need to decide how much autocorrelation we wa
 
 Overall, I am sufficiently satisfied with the model assumptions given the time that I have to investigate and construct the model.
 
-```{r fig.cap="Figure 8. Differenced daily sales volume.", class.source='fold-hide', eval = FALSE}
+
+```{.r .fold-hide}
 model_data[ , {
     plot( period_end[-1], diff(sales_volume), type = "l",
         xlab = "Day", ylab = "Sales volume (first order difference)",
@@ -542,7 +613,8 @@ As we saw previously in Figures 1 to 3, there may be daily, monthly, and yearly 
 
 The `JAGS` code for the model is folded below:
 
-```{r class.source='fold-hide', eval = FALSE}
+
+```{.r .fold-hide}
 {jags_model = "
     model{
     # Priors
@@ -675,7 +747,8 @@ save( sales_volume_pred_quant,
 
 Figures 8 and 9 show the historical daily sales volume and gross sales. 95% credible intervals for the posterior predicted volume/sales are also shown. The predictions are shown up to November 2011. I will zoom in on the December 2011 predictions subsequently. Due to the high variability of the time-series, the credible intervals are very wide. However, our model does seem to capture the overall trends on the month and weekly scales.
 
-```{r fig.cap="Figure 8. Historical daily sales volume.", class.source='fold-hide'}
+
+```{.r .fold-hide}
 load( "bayesian_model_output.RData" )
 load( "model_data.RData" )
 
@@ -693,7 +766,14 @@ model_data[ , {
 } ]
 ```
 
-```{r fig.cap="Figure 9. Historical daily gross sales.", class.source='fold-hide'}
+![Figure 8. Historical daily sales volume.](retail_report_files/figure-html/unnamed-chunk-24-1.png)
+
+```
+## NULL
+```
+
+
+```{.r .fold-hide}
 model_data[ , {
     plot( period_end, gross_sales/1000, type = "l", ylab = "Gross sales / 1000",
         xlab = "Day", main = "Daily gross sales (up to end Nov 2011)")
@@ -706,17 +786,25 @@ model_data[ , {
         lty = 1, col = c("black", "red", "blue"), bty = "n" )
     invisible(NULL)
 } ]
+```
 
+![Figure 9. Historical daily gross sales.](retail_report_files/figure-html/unnamed-chunk-25-1.png)
+
+```
+## NULL
+```
+
+```{.r .fold-hide}
 posterior_predict_dec_2011 = rowSums( dec_gross_sales_pred ) +
     sum(model_data_dec_only$gross_sales, na.rm = T )
 posterior_predict_dec_2011_CI = round(
     quantile(posterior_predict_dec_2011, probs = c(0.05, 0.95)), -4 )
-
 ```
 
-The predicted gross sales for December 2011 are shown in Figure 10. The daily volume graph is omitted for brevity. The break in the series between the data and the predicted values is a Saturday, which was removed from the dataset. Figure 11 shows the distribution of the predicted revenue for December 2011. Based on our model, the predicted revenue for December is expected to be $`r round( mean(posterior_predict_dec_2011), -4 )`, and between `r posterior_predict_dec_2011_CI[1]` and `r posterior_predict_dec_2011_CI[2]` with 90% probability. 
+The predicted gross sales for December 2011 are shown in Figure 10. The daily volume graph is omitted for brevity. The break in the series between the data and the predicted values is a Saturday, which was removed from the dataset. Figure 11 shows the distribution of the predicted revenue for December 2011. Based on our model, the predicted revenue for December is expected to be $920000, and between 830000 and 1020000 with 90% probability. 
 
-```{r fig.cap="Figure 10. Predicted daily gross sales for December 2011.", class.source='fold-hide'}
+
+```{.r .fold-hide}
 prediction_dates = model_data_dec_only[ is.na(gross_sales ), period_end ]
 
 # model_data_dec_only[ , {
@@ -745,16 +833,29 @@ model_data_dec_only[ , {
     } ]
 ```
 
-```{r fig.cap="Figure 11. Predicted December 2011 revenue.", class.source='fold-hide'}
+![Figure 10. Predicted daily gross sales for December 2011.](retail_report_files/figure-html/unnamed-chunk-26-1.png)
+
+```
+## NULL
+```
+
+
+```{.r .fold-hide}
 hist( posterior_predict_dec_2011,
     main = "Predicted revenue December 2011", breaks = 100,
     ylab = "Density", xlab = "Revenue", prob = T)
+```
+
+![Figure 11. Predicted December 2011 revenue.](retail_report_files/figure-html/unnamed-chunk-27-1.png)
+
+```{.r .fold-hide}
 invisible(NULL)
 ```
 
 To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 12, the credible intervals enclose the observed daily gross sales. 
 
-```{r fig.cap="Figure 12. Gross sales for December 2010.", class.source='fold-hide'}
+
+```{.r .fold-hide}
 plot_interval = interval( as_date("2010-10-01"), as_date("2010-12-31") )
 plot_indicators = model_data[-1]$period_end %within% plot_interval
 
@@ -773,8 +874,15 @@ model_data_no_dec[ period_end %in% prediction_dates, {
         ncol = 2)
     invisible(NULL)
     } ]
+```
 
+![Figure 12. Gross sales for December 2010.](retail_report_files/figure-html/unnamed-chunk-28-1.png)
 
+```
+## NULL
+```
+
+```{.r .fold-hide}
 posterior_pred_ = rowSums( as.matrix(gross_sales_pred)[ , period_indicator[-1] ] )
 pred_december_revenue_mean = round( mean(posterior_pred_), -4 )
 pred_december_interval = round( quantile( posterior_pred_, probs = c(0.05, 0.95) ), -4 ) 
@@ -782,9 +890,9 @@ december_revenue = round(
     model_data_no_dec[ period_end %in% prediction_dates, sum(gross_sales) ], -4 )
 ```
 
-The average predicted revenue for December 2010 was \$`r pred_december_revenue_mean`, with a 90% credible interval of `r pred_december_interval[1]` to `r pred_december_interval[2]`. This is compared to an actual revenue for December 2011 of \$`r december_revenue`. So, based on the model's historical performance, we except our forecast for December 2011 to be fairly accurate.
+The average predicted revenue for December 2010 was \$730000, with a 90% credible interval of 620000 to 840000. This is compared to an actual revenue for December 2011 of \$750000. So, based on the model's historical performance, we except our forecast for December 2011 to be fairly accurate.
 
 ## Conclusion
 
-For December 2011, I forecast an expected revenue of $`r round( mean(posterior_predict_dec_2011), -4 )`, with 90% probability being between `r posterior_predict_dec_2011_CI[1]` and `r posterior_predict_dec_2011_CI[2]`. Based on forecast accuracy for last year (December 2010), I am quite confident in the accuracy of my predictions for 2011. Of course, this is assuming that past trends continue to hold into the future. Overall, I can back my prediction enough to recommend a Ferrari.
+For December 2011, I forecast an expected revenue of $920000, with 90% probability being between 830000 and 1020000. Based on forecast accuracy for last year (December 2010), I am quite confident in the accuracy of my predictions for 2011. Of course, this is assuming that past trends continue to hold into the future. Overall, I can back my prediction enough to recommend a Ferrari.
 
