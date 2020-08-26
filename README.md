@@ -41,6 +41,7 @@ grepname = function( pattern, names_){
 I load the data into `R`.
 
 <details><summary>Fold</summary>
+
 ```{.r .fold-show}
 retail_dataset = data.table( read.csv( "online_retail_II.csv" ) )
 ```
