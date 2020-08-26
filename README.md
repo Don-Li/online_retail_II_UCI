@@ -1,18 +1,21 @@
+Hello, welcome to my report for the online retail II UCI revenue forecasting exercise.
+
+You can find my solution/report in three places. There is one version [here](https://github.com/Don-Li/online_retail_II_UCI#task-0-loading-libraries) rendered as a Git-flavoured markdown file.
+
+Another version can be found at https://github.com/Don-Li/online_retail_II_UCI/blob/master/retail_report.html, as a html file.
+
+A third version can be found at https://github.com/Don-Li/online_retail_II_UCI/blob/master/retail_report.pdf as a pdf.
+
+The difference between the three is that the pdf does not have code folding. Some of the code chunks are quite long (e.g., the model that I wrote), so the pdf version has some appendices, which can make it flow of the document a bit awkward. The html and markdown have code folding, so it should flow a bit better.
+
+The dataset can be found at https://www.kaggle.com/mashlyn/online-retail-ii-uci.
+
+Thank you for reading.
+
 ---
 title: 'Analysis report: Online Retail II UCI'
 author: "Don Li (donli.datascience@gmail.com)"
 date: "24/08/2020"
-output:
-  html_document:
-    code_folding: hide
-    fig_width: 5
-    fig_height: 3.5
-    keep_md: true
-  html_notebook:
-    code_folding: hide
-  pdf_document: default
-editor_options:
-  chunk_output_type: console
 ---
 
 In this document, I will analyse the sales records for an online retailer for sales recorded between 01/12/2009 and 09/12/2011. I start with the data cleaning.
@@ -911,7 +914,7 @@ invisible(NULL)
 
 </details>
 
-To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 12, the credible intervals enclose the observed daily gross sales. 
+To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 11, the credible intervals enclose the observed daily gross sales. 
 
 <details><summary>Fold</summary>
 
@@ -938,9 +941,9 @@ model_data_no_dec[ period_end %in% prediction_dates, {
 
 </details>
 
-![Figure 12. Gross sales for December 2010.](retail_report_files/figure-html/unnamed-chunk-28-1.png)
+![Figure 11. Gross sales for December 2010.](retail_report_files/figure-html/unnamed-chunk-28-1.png)
 
-Figure 12. Gross sales for December 2010.
+Figure 11. Gross sales for December 2010.
 
 <details><summary>Fold</summary>
 
