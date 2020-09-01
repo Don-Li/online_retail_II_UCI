@@ -6,7 +6,7 @@ A second version can be found at https://don-li.github.io/online_retail_II_UCI/,
 
 Another version can be found at https://github.com/Don-Li/online_retail_II_UCI/blob/master/retail_report.html, as a html file.
 
-A third version can be found at https://github.com/Don-Li/online_retail_II_UCI/blob/master/retail_report.pdf as a pdf.
+A third version can be found at https://github.com/Don-Li/online_retail_II_UCI/blob/master/retail_report_PDF_tidy.pdf as a pdf.
 
 The difference between the three is that the pdf does not have code folding. Some of the code chunks are quite long (e.g., the model that I wrote), so the pdf version has some appendices, which can make it flow of the document a bit awkward. The html and markdown have code folding, so it should flow a bit better.
 
