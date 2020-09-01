@@ -902,6 +902,7 @@ hist( posterior_predict_dec_2011,
     main = "Predicted revenue December 2011", breaks = 100,
     ylab = "Density", xlab = "Revenue", prob = T)
 ```
+</details>
 
 ![Figure 11. Predicted December 2011 revenue.](retail_report_files/figure-html/unnamed-chunk-27-1.png)
 
@@ -911,7 +912,6 @@ Figure 11. Predicted December 2011 revenue.
 invisible(NULL)
 ```
 
-</details>
 
 To improve our confidence in these results, we can examine the predictions for the previous December (2010). From Figure 11, the credible intervals enclose the observed daily gross sales. 
 
